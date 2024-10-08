@@ -1,3 +1,5 @@
+package leetcode.medium1963;
+
 import java.util.Stack;
 
 /**
@@ -5,21 +7,21 @@ import java.util.Stack;
  */
 public class Solution {
     public static void main(String[] args) {
-        int a = minLength("BJKDKABJ");
+        int a = minSwaps(")))(((");
         System.out.println(a);
     }
 
-    public static int minLength(String s) {
+    public static int minSwaps(String s) {
         Stack<Character> st = new Stack<>();
         for (Character a : s.toCharArray()) {
-            if (st.size() > 0 && st.peek() == 'A' && a == 'B') {
-                st.pop();
-            } else if (st.size() > 0 && st.peek() == 'C' && a == 'D') {
-                st.pop();
-            } else {
+            if (a == '(') {
                 st.push(a);
             }
+            if (st.size() > 0 && st.peek() == '(' && a == ')') {
+                st.pop();
+            }
         }
-        return st.size();
+        int res = st.size();
+        return res % 2 == 0 ? res / 2 : (res + 1) / 2;
     }
 }

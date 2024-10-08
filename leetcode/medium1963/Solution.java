@@ -3,21 +3,22 @@ package leetcode.medium1963;
 import java.util.Stack;
 
 /**
- * Using stack to perform operations and pop out char seqeunce of "AB" and "CD"
+ * Using stack to perform operations and push opening and pop out closing
+ * brackets
  */
 public class Solution {
     public static void main(String[] args) {
-        int a = minSwaps(")))(((");
+        int a = minSwaps("]]][[[");
         System.out.println(a);
     }
 
     public static int minSwaps(String s) {
         Stack<Character> st = new Stack<>();
         for (Character a : s.toCharArray()) {
-            if (a == '(') {
+            if (a == '[') {
                 st.push(a);
             }
-            if (st.size() > 0 && st.peek() == '(' && a == ')') {
+            if (st.size() > 0 && st.peek() == '[' && a == ']') {
                 st.pop();
             }
         }

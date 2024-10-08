@@ -1,4 +1,4 @@
-package leetcode.medium1963;
+package leetcode.medium_1963;
 
 import java.util.Stack;
 

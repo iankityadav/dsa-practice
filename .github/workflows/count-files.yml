@@ -16,20 +16,27 @@ jobs:
       - name: Count files and generate table
         id: count_files
         run: |
-          # Count files and generate a markdown table
-          echo "| File Type | Count |" > file_count.md
-          echo "|-----------|-------|" >> file_count.md
-          for ext in $(find . -type f | sed 's|.*\.||' | sort | uniq); do
-            count=$(find . -type f -name "*.$ext" | wc -l)
-            echo "| .$ext      | $count  |" >> file_count.md
+          count_file="file_counts.md"
+          echo "| Main Folder | File Extension | Count |" > $count_file
+          echo "|--------------|----------------|-------|" >> $count_file
+
+          # Loop through directories and count files
+          for dir in ./*; do
+            if [ -d "$dir" ]; then
+              main_folder=$(basename "$dir")
+              # Count files by extension
+              find "$dir" -type f ! -path "*/git/*" ! -path "*/github/*" | \
+              awk -F. '{ if (NF>1) print $NF }' | sort | uniq -c | \
+              awk -v folder="$main_folder" '{print "| " folder " | " $2 " | " $1 " |"}' >> $count_file
+            fi
           done
 
       - name: Update README.md
         run: |
           # Append the generated table to README.md
           echo "## File Count" >> README.md
-          cat file_count.md >> README.md
-          rm file_count.md
+          cat file_counts.md >> README.md
+          rm file_counts.md
 
       - name: Commit changes
         run: |

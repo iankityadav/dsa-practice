@@ -1,0 +1,40 @@
+name: Count Files and Update README
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  count-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Count files and generate table
+        id: count_files
+        run: |
+          # Count files and generate a markdown table
+          echo "| File Type | Count |" > file_count.md
+          echo "|-----------|-------|" >> file_count.md
+          for ext in $(find . -type f | sed 's|.*\.||' | sort | uniq); do
+            count=$(find . -type f -name "*.$ext" | wc -l)
+            echo "| .$ext      | $count  |" >> file_count.md
+          done
+
+      - name: Update README.md
+        run: |
+          # Append the generated table to README.md
+          echo "## File Count" >> README.md
+          cat file_count.md >> README.md
+          rm file_count.md
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "Update README.md with file count" || echo "No changes to commit"
+          git push

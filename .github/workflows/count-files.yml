@@ -33,9 +33,13 @@ jobs:
 
       - name: Update README.md
         run: |
-          # Append the generated table to README.md
-          echo "## File Count" >> README.md
+          # Remove the old file counts section from README.md
+          sed -i.bak '/<!-- file-counts -->/,/<!-- end-file-counts -->/d' README.md
+          # Append the new counts to README.md
+          echo "<!-- file-counts -->" >> README.md
           cat file_counts.md >> README.md
+          echo "<!-- end-file-counts -->" >> README.md
+          echo "" >> README.md
           rm file_counts.md
 
       - name: Commit changes
